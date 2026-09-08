@@ -1,0 +1,271 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import Hero from "../components/Hero.astro";
+import Marquee from "../components/Marquee.astro";
+import LinkBox from "../components/cards/LinkBox.astro";
+import RecordingCard from "../components/cards/RecordingCard.astro";
+import MemberCard from "../components/cards/MemberCard.astro";
+import FunqItem from "../components/cards/FunqItem.astro";
+import MiniCalendar from "../components/MiniCalendar.astro";
+import ContactForm from "../components/ContactForm.astro";
+import { LINK_BOXES, SITE, withBase } from "../config.ts";
+import {
+  getSiteContent,
+  getUpcomingShows,
+  getFeaturedRecordings,
+  getBandMembers,
+  getFunqs,
+} from "../lib/contentful.ts";
+
+const [content, shows, recordings, members, funqs] = await Promise.all([
+  getSiteContent(),
+  getUpcomingShows(4),
+  getFeaturedRecordings(3),
+  getBandMembers(),
+  getFunqs(),
+]);
+const topFunqs = funqs.slice(0, 4);
+---
+
+<BaseLayout description={SITE.description}>
+  <Hero content={content} />
+
+  <Marquee
+    items={[
+      "Elevate everything",
+      "+ everyone",
+      "+ everywhere",
+      "Funk @ 5",
+      "Say yes to the groove",
+    ]}
+  />
+
+  {/* Section 2 — three link boxes */}
+  <Section id="explore" labelledby="explore-h">
+    <SectionHeading kicker="Start here" title="Three ways in" id="explore-h" />
+    <div class="fy-boxes">
+      {LINK_BOXES.map((b, i) => <LinkBox {...b} index={i + 1} />)}
+    </div>
+  </Section>
+
+  {/* Section 3 — Funk Files preview */}
+  <Section raised labelledby="files-h">
+    <SectionHeading
+      kicker="Listen"
+      title="Funk Files"
+      id="files-h"
+      link={{ label: "All recordings", href: withBase("/funk-files") }}
+    />
+    {content.funkFilesIntro && <p class="fy-lede">{content.funkFilesIntro}</p>}
+    <div class="fy-rec-grid">
+      {recordings.map((r) => <RecordingCard recording={r} />)}
+    </div>
+  </Section>
+
+  {/* Section 4 — Funk @ 5 */}
+  <Section labelledby="shows-h">
+    <SectionHeading
+      kicker="Show up"
+      title="Funk @ 5"
+      id="shows-h"
+      link={{ label: "Full calendar", href: withBase("/funk-at-5") }}
+    />
+    <MiniCalendar shows={shows} />
+  </Section>
+
+  {/* Section 5 — Meet The Funk Yes! */}
+  <Section raised labelledby="meet-h">
+    <SectionHeading
+      kicker="Know us"
+      title="Meet The Funk Yes!"
+      id="meet-h"
+      link={{ label: "Full story", href: withBase("/behind-the-funk-yes") }}
+    />
+    <div class="fy-band">
+      {
+        content.bandGroupPhoto && (
+          <div class="fy-band__photo fy-duotone">
+            <img
+              src={content.bandGroupPhoto.url}
+              alt={content.bandGroupPhoto.alt}
+              loading="lazy"
+              width={content.bandGroupPhoto.width}
+              height={content.bandGroupPhoto.height}
+            />
+          </div>
+        )
+      }
+      <p class="fy-band__bio">{content.bandBioShort}</p>
+    </div>
+    <div class="fy-members">
+      {members.map((m) => <MemberCard member={m} />)}
+    </div>
+  </Section>
+
+  {/* Section 6 — Introducing The Fuck Yes! */}
+  <section class="fy-fuckyes" aria-labelledby="fuckyes-h">
+    {
+      content.fuckYesPhoto && (
+        <div class="fy-fuckyes__bg fy-grime" aria-hidden="true">
+          <img src={content.fuckYesPhoto.url} alt="" loading="lazy" />
+        </div>
+      )
+    }
+    <div class="fy-shell fy-fuckyes__inner">
+      <p class="fy-kicker" style="color:var(--color-fy-magenta)">After midnight</p>
+      <h2 id="fuckyes-h">Introducing<br />The Fuck Yes!</h2>
+      <div class="fy-prose fy-fuckyes__desc" set:html={content.fuckYesDescription} />
+      <a class="fy-btn fy-btn--magenta" href={withBase("/fuck-yes")}>Go darker →</a>
+    </div>
+  </section>
+
+  {/* Section 7 — Bring the funk */}
+  <Section labelledby="book-h">
+    <SectionHeading kicker="Hire us" title={"Bring the funk to YOUR ___"} id="book-h" />
+    <div class="fy-book">
+      <div class="fy-prose fy-book__copy" set:html={content.bookingBlurb} />
+      <div class="fy-book__form">
+        <ContactForm variant="compact" />
+        <p class="fy-book__more">
+          <a href={withBase("/contact")} class="fy-link-underline">Full booking form →</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  {/* FUNQs */}
+  <Section raised labelledby="funq-h">
+    <SectionHeading
+      kicker="FUNQs"
+      title="Frequently unanswered newbie questions"
+      id="funq-h"
+      link={{ label: "All FUNQs", href: withBase("/funqs") }}
+    />
+    <div class="fy-funqs">
+      {topFunqs.map((f, i) => <FunqItem funq={f} index={i + 1} open={i === 0} />)}
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-boxes {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+  }
+  .fy-lede {
+    max-width: 60ch;
+    color: var(--color-fy-ink-dim);
+    margin: 0 0 2rem;
+    font-size: 1.05rem;
+  }
+  .fy-rec-grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+  .fy-band {
+    display: grid;
+    gap: 1.75rem;
+    grid-template-columns: minmax(0, 22rem) 1fr;
+    align-items: center;
+    margin-bottom: 2.5rem;
+  }
+  .fy-band__photo {
+    aspect-ratio: 3 / 2;
+    overflow: hidden;
+  }
+  .fy-band__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fy-band__bio {
+    margin: 0;
+    font-size: clamp(1.05rem, 2.4vw, 1.4rem);
+  }
+  .fy-members {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+
+  .fy-fuckyes {
+    position: relative;
+    padding-block: 7rem;
+    border-block: 2px solid var(--color-fy-ink);
+    overflow: hidden;
+    background: #000;
+  }
+  .fy-fuckyes__bg {
+    position: absolute;
+    inset: 0;
+  }
+  .fy-fuckyes__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.5;
+  }
+  .fy-fuckyes__inner {
+    position: relative;
+  }
+  .fy-fuckyes h2 {
+    font-size: clamp(2.5rem, 9vw, 6rem);
+    color: #fff;
+    margin: 0.5rem 0 1.25rem;
+  }
+  .fy-fuckyes__desc {
+    max-width: 46ch;
+    color: var(--color-fy-ink-dim);
+    margin-bottom: 1.75rem;
+  }
+
+  .fy-btn {
+    display: inline-block;
+    padding: 0.8rem 1.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid currentColor;
+  }
+  .fy-btn--magenta {
+    color: var(--color-fy-magenta);
+  }
+  .fy-btn--magenta:hover,
+  .fy-btn--magenta:focus-visible {
+    background: var(--color-fy-magenta);
+    color: #fff;
+  }
+
+  .fy-book {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  .fy-book__copy {
+    font-size: 1.1rem;
+  }
+  .fy-book__more {
+    margin: 1rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+  }
+
+  .fy-funqs {
+    margin-top: 0.5rem;
+  }
+
+  @media (max-width: 52rem) {
+    .fy-band,
+    .fy-book {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

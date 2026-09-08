@@ -1,0 +1,62 @@
+---
+import { withBase } from "../../config.ts";
+
+interface Props {
+  kicker: string;
+  title: string;
+  href: string;
+  blurb: string;
+  index?: number;
+}
+const { kicker, title, href, blurb, index } = Astro.props;
+---
+
+<a class="fy-linkbox" href={withBase(href)}>
+  {index != null && <span class="fy-linkbox__num">{String(index).padStart(2, "0")}</span>}
+  <span class="fy-kicker">{kicker}</span>
+  <h3>{title}</h3>
+  <p>{blurb}</p>
+  <span class="fy-linkbox__go" aria-hidden="true">Enter →</span>
+</a>
+
+<style>
+  .fy-linkbox {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1.75rem;
+    border: 1px solid var(--color-fy-line);
+    background: var(--color-fy-bg-raised);
+    position: relative;
+    overflow: hidden;
+    transition:
+      border-color 0.25s var(--ease-funk),
+      transform 0.25s var(--ease-funk);
+  }
+  .fy-linkbox:hover,
+  .fy-linkbox:focus-visible {
+    border-color: var(--color-fy-acid);
+    transform: translateY(-4px);
+  }
+  .fy-linkbox__num {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-linkbox h3 {
+    font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+  }
+  .fy-linkbox p {
+    margin: 0;
+    color: var(--color-fy-ink-dim);
+    flex: 1;
+  }
+  .fy-linkbox__go {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-fy-acid);
+  }
+</style>

@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import FunqItem from "../components/cards/FunqItem.astro";
+import { getFunqs } from "../lib/contentful.ts";
+
+const funqs = await getFunqs();
+---
+
+<BaseLayout
+  title="FUNQs"
+  description="Frequently Unanswered Newbie Questions about The Funk Yes! — booking, band size, the name, and where the recordings live."
+>
+  <PageHeader
+    kicker="FUNQs"
+    title="Frequently unanswered newbie questions"
+    intro="The stuff people ask before their first show, their first booking, or their first argument about the spelling."
+  />
+
+  <Section>
+    {
+      funqs.length ? (
+        <div class="fy-funqs">
+          {funqs.map((f, i) => <FunqItem funq={f} index={i + 1} open={i === 0} />)}
+        </div>
+      ) : (
+        <p class="fy-empty">No questions yet. Ask one — <a class="fy-link-underline" href="./contact">contact us</a>.</p>
+      )
+    }
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-funqs {
+    max-width: 60rem;
+  }
+  .fy-empty {
+    color: var(--color-fy-ink-dim);
+  }
+</style>

@@ -1,0 +1,87 @@
+---
+import { INTEGRATIONS } from "../config.ts";
+
+interface Props {
+  class?: string;
+  heading?: string;
+}
+const { class: className, heading = "Get on the list" } = Astro.props;
+const action = INTEGRATIONS.newsletterUrl;
+---
+
+<form
+  class:list={["fy-signup", className]}
+  action={action || undefined}
+  method="post"
+  target="_blank"
+  data-configured={action ? "true" : "false"}
+>
+  <label class="fy-signup__label" for="fy-email">{heading}</label>
+  <div class="fy-signup__row">
+    <input
+      id="fy-email"
+      type="email"
+      name="email"
+      autocomplete="email"
+      required
+      placeholder="you@yourplace.com"
+    />
+    <button type="submit">Sign up</button>
+  </div>
+  {
+    !action && (
+      <p class="fy-signup__note">
+        Newsletter provider not configured yet — set <code>PUBLIC_NEWSLETTER_URL</code>.
+      </p>
+    )
+  }
+</form>
+
+<style>
+  .fy-signup__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-fy-acid);
+    margin-bottom: 0.6rem;
+  }
+  .fy-signup__row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+  }
+  .fy-signup input {
+    flex: 1 1 12rem;
+    padding: 0.7rem 0.85rem;
+    background: var(--color-fy-bg);
+    border: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink);
+    font: inherit;
+  }
+  .fy-signup button {
+    padding: 0.7rem 1.4rem;
+    background: var(--color-fy-acid);
+    color: #0b0b0c;
+    border: 0;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .fy-signup button:hover,
+  .fy-signup button:focus-visible {
+    background: #fff;
+  }
+  .fy-signup__note {
+    margin: 0.5rem 0 0;
+    font-size: 0.78rem;
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-signup__note code {
+    font-family: var(--font-mono);
+  }
+</style>

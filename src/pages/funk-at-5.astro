@@ -1,0 +1,65 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import ShowCard from "../components/cards/ShowCard.astro";
+import { getShows } from "../lib/contentful.ts";
+
+const all = await getShows();
+const now = Date.now();
+const upcoming = all
+  .filter((s) => s.dateTime && new Date(s.dateTime).getTime() >= now - 1000 * 60 * 60 * 6)
+  .sort((a, b) => +new Date(a.dateTime) - +new Date(b.dateTime));
+const past = all
+  .filter((s) => s.dateTime && new Date(s.dateTime).getTime() < now - 1000 * 60 * 60 * 6)
+  .sort((a, b) => +new Date(b.dateTime) - +new Date(a.dateTime));
+---
+
+<BaseLayout
+  title="Funk @ 5"
+  description="Where The Funk Yes! is playing next — backyards, bars, benefits and streets."
+>
+  <PageHeader
+    kicker="Show up"
+    title="Funk @ 5"
+    intro="Every place we're bringing the funk. Times are start times; we usually play until someone makes us stop."
+  />
+
+  <Section labelledby="upcoming-h">
+    <h2 id="upcoming-h" class="fy-h">Upcoming</h2>
+    {
+      upcoming.length ? (
+        <div class="fy-list">{upcoming.map((s) => <ShowCard show={s} />)}</div>
+      ) : (
+        <p class="fy-empty">Nothing booked at the moment. Want to change that? <a class="fy-link-underline" href="./contact">Book us.</a></p>
+      )
+    }
+  </Section>
+
+  {
+    past.length > 0 && (
+      <Section raised labelledby="past-h">
+        <h2 id="past-h" class="fy-h">Played</h2>
+        <div class="fy-list fy-list--past">{past.map((s) => <ShowCard show={s} />)}</div>
+      </Section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .fy-h {
+    font-size: clamp(1.75rem, 5vw, 3rem);
+    margin-bottom: 1rem;
+  }
+  .fy-list {
+    border-bottom: 1px solid var(--color-fy-line);
+  }
+  .fy-list--past {
+    opacity: 0.72;
+  }
+  .fy-empty {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink-dim);
+  }
+</style>

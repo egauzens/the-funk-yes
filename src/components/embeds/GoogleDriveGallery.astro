@@ -1,0 +1,83 @@
+---
+import GoogleDriveFile from "./GoogleDriveFile.astro";
+
+/**
+ * Drive has no clean "embed a whole folder" option, so a gallery is an explicit
+ * list of file ids (from the Contentful `gallery` model, or passed inline).
+ * Images render as <img>; anything else falls back to the Drive preview frame.
+ */
+interface GalleryItem {
+  driveFileId: string;
+  caption?: string;
+  /** true => render as an <img> thumbnail linking to the Drive view. */
+  isImage?: boolean;
+}
+interface Props {
+  items: GalleryItem[];
+  class?: string;
+}
+const { items, class: className } = Astro.props;
+
+const idOf = (s: string) => (s.match(/[-\w]{20,}/) ?? [s])[0];
+---
+
+<div class:list={["fy-gallery", className]}>
+  {
+    items.map((item) => {
+      const id = idOf(item.driveFileId);
+      return item.isImage ? (
+        <a
+          class="fy-gallery__img"
+          href={`https://drive.google.com/file/d/${id}/view`}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src={`https://drive.google.com/thumbnail?id=${id}&sz=w800`}
+            alt={item.caption ?? "Gallery image"}
+            loading="lazy"
+          />
+          {item.caption && <span>{item.caption}</span>}
+        </a>
+      ) : (
+        <GoogleDriveFile idOrUrl={id} label={item.caption} title={item.caption ?? "Gallery clip"} />
+      );
+    })
+  }
+</div>
+
+<style>
+  .fy-gallery {
+    display: grid;
+    gap: 1rem;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr));
+  }
+  .fy-gallery__img {
+    display: block;
+    border: 1px solid var(--color-fy-line);
+    position: relative;
+  }
+  .fy-gallery__img img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    filter: grayscale(1) contrast(1.1);
+    transition: filter 0.25s var(--ease-funk);
+  }
+  .fy-gallery__img:hover img,
+  .fy-gallery__img:focus-visible img {
+    filter: none;
+  }
+  .fy-gallery__img span {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    padding: 0.4rem 0.6rem;
+    background: var(--color-fy-bg);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+</style>

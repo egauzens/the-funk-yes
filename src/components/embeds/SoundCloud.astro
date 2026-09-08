@@ -1,0 +1,46 @@
+---
+import EmbedFrame from "./EmbedFrame.astro";
+
+interface Props {
+  /** A soundcloud.com track or playlist URL. */
+  url: string;
+  title?: string;
+  label?: string;
+  /** "track" ~166px, "playlist" ~420px. */
+  kind?: "track" | "playlist";
+}
+const { url, title = "SoundCloud player", label, kind = "track" } = Astro.props;
+
+const isValid = /^https?:\/\/(www\.)?soundcloud\.com\//.test(url);
+const height = kind === "playlist" ? 420 : 166;
+const src = isValid
+  ? `https://w.soundcloud.com/player/?url=${encodeURIComponent(url)}` +
+    "&color=%23ff2e88&auto_play=false&hide_related=true&show_comments=false" +
+    "&show_user=true&show_reposts=false&show_teaser=false&visual=false"
+  : "";
+---
+
+<EmbedFrame label={label}>
+  {
+    isValid ? (
+      <iframe
+        src={src}
+        title={title}
+        height={height}
+        loading="lazy"
+        allow="autoplay"
+        style={`height:${height}px`}
+      />
+    ) : (
+      <p class="fy-embed-missing">Set a valid soundcloud.com URL for “{title}”.</p>
+    )
+  }
+</EmbedFrame>
+
+<style>
+  .fy-embed-missing {
+    padding: 1.5rem;
+    color: var(--color-fy-ink-dim);
+    font-size: 0.85rem;
+  }
+</style>

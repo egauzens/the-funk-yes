@@ -1,0 +1,38 @@
+---
+interface Props {
+  id?: string;
+  class?: string;
+  /** Tint the section background. */
+  raised?: boolean;
+  /** Vertical padding scale. */
+  size?: "sm" | "md" | "lg";
+  labelledby?: string;
+}
+const { id, class: className, raised = false, size = "md", labelledby } = Astro.props;
+---
+
+<section
+  id={id}
+  class:list={["fy-section", `fy-section--${size}`, { "fy-section--raised": raised }, className]}
+  aria-labelledby={labelledby}
+>
+  <div class="fy-shell">
+    <slot />
+  </div>
+</section>
+
+<style>
+  .fy-section--sm {
+    padding-block: 2.5rem;
+  }
+  .fy-section--md {
+    padding-block: 4.5rem;
+  }
+  .fy-section--lg {
+    padding-block: 6rem;
+  }
+  .fy-section--raised {
+    background: var(--color-fy-bg-raised);
+    border-block: 1px solid var(--color-fy-line);
+  }
+</style>

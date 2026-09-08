@@ -1,0 +1,49 @@
+---
+/**
+ * Placeholder wordmark. Replace with the real logo (drop an SVG at
+ * `src/assets/logo.svg` and swap the markup below) once art exists.
+ */
+interface Props {
+  class?: string;
+  /** When true, renders the "// THE FUCK YES!" alter-ego lockup. */
+  alt?: boolean;
+}
+const { class: className, alt = false } = Astro.props;
+---
+
+<span class:list={["fy-logo", className, { "fy-logo--alt": alt }]} aria-hidden="true">
+  {
+    alt ? (
+      <>
+        <span class="fy-logo__slash">//</span> THE&nbsp;FUCK&nbsp;YES<span class="fy-logo__bang">!</span>
+      </>
+    ) : (
+      <>
+        THE&nbsp;FUNK&nbsp;YES<span class="fy-logo__bang">!</span>
+      </>
+    )
+  }
+</span>
+
+<style>
+  .fy-logo {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    line-height: 0.85;
+    white-space: nowrap;
+    color: var(--color-fy-ink);
+  }
+  .fy-logo__bang {
+    color: var(--color-fy-acid);
+  }
+  .fy-logo--alt {
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-logo--alt .fy-logo__bang {
+    color: var(--color-fy-magenta);
+  }
+  .fy-logo__slash {
+    color: var(--color-fy-magenta);
+  }
+</style>

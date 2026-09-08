@@ -1,0 +1,31 @@
+---
+import type { Show } from "../lib/types.ts";
+import ShowCard from "./cards/ShowCard.astro";
+
+interface Props {
+  shows: Show[];
+  emptyText?: string;
+}
+const { shows, emptyText = "No shows on the books right now — check back soon." } = Astro.props;
+---
+
+<div class="fy-minical">
+  {
+    shows.length ? (
+      shows.map((show) => <ShowCard show={show} compact />)
+    ) : (
+      <p class="fy-minical__empty">{emptyText}</p>
+    )
+  }
+</div>
+
+<style>
+  .fy-minical {
+    border-bottom: 1px solid var(--color-fy-line);
+  }
+  .fy-minical__empty {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink-dim);
+  }
+</style>

@@ -1,0 +1,76 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import MemberCard from "../components/cards/MemberCard.astro";
+import { getSiteContent, getBandMembers } from "../lib/contentful.ts";
+
+const [content, members] = await Promise.all([getSiteContent(), getBandMembers()]);
+---
+
+<BaseLayout
+  title="Behind The Funk Yes!"
+  description="How The Funk Yes! started, who's in the band, and why we keep saying yes."
+>
+  <PageHeader kicker="Know us" title="Behind The Funk Yes!" />
+
+  <Section labelledby="story-h">
+    <h2 id="story-h" class="fy-h">The story</h2>
+    <div class="fy-story">
+      {
+        content.bandGroupPhoto && (
+          <div class="fy-story__photo fy-duotone">
+            <img
+              src={content.bandGroupPhoto.url}
+              alt={content.bandGroupPhoto.alt}
+              width={content.bandGroupPhoto.width}
+              height={content.bandGroupPhoto.height}
+            />
+          </div>
+        )
+      }
+      <div class="fy-prose fy-story__text" set:html={content.bandBioLong} />
+    </div>
+  </Section>
+
+  <Section raised labelledby="players-h">
+    <h2 id="players-h" class="fy-h">The players</h2>
+    <div class="fy-roster">
+      {members.map((m) => <MemberCard member={m} detailed />)}
+    </div>
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-h {
+    font-size: clamp(1.75rem, 5vw, 3rem);
+    margin-bottom: 1.5rem;
+  }
+  .fy-story {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: minmax(0, 24rem) 1fr;
+    align-items: start;
+  }
+  .fy-story__photo {
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+  .fy-story__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fy-story__text {
+    font-size: 1.1rem;
+  }
+  .fy-roster {
+    display: grid;
+    gap: 1.5rem;
+  }
+  @media (max-width: 52rem) {
+    .fy-story {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

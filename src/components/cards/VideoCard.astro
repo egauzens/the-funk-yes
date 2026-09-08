@@ -1,0 +1,39 @@
+---
+import type { LiveVideo } from "../../lib/types.ts";
+import { fmtDate } from "../../lib/format.ts";
+import YouTube from "../embeds/YouTube.astro";
+import GoogleDriveFile from "../embeds/GoogleDriveFile.astro";
+import InstagramEmbed from "../embeds/InstagramEmbed.astro";
+
+interface Props {
+  video: LiveVideo;
+}
+const { video: v } = Astro.props;
+const date = v.date ? fmtDate(v.date, { year: "numeric" }) : "";
+---
+
+<article class="fy-vid">
+  <div class="fy-vid__player">
+    {v.platform === "YouTube" && <YouTube idOrUrl={v.urlOrId} title={v.title} label={`YouTube${date ? " · " + date : ""}`} />}
+    {v.platform === "Google Drive" && <GoogleDriveFile idOrUrl={v.urlOrId} kind="video" title={v.title} label={`Drive${date ? " · " + date : ""}`} />}
+    {v.platform === "Instagram" && <InstagramEmbed url={v.urlOrId} label={`Instagram${date ? " · " + date : ""}`} />}
+  </div>
+  <h3>{v.title}</h3>
+  {v.description && <p class="fy-vid__desc">{v.description}</p>}
+</article>
+
+<style>
+  .fy-vid {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+  .fy-vid h3 {
+    font-size: clamp(1.2rem, 2.6vw, 1.6rem);
+  }
+  .fy-vid__desc {
+    margin: 0;
+    color: var(--color-fy-ink-dim);
+    font-size: 0.92rem;
+  }
+</style>

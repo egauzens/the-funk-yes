@@ -1,0 +1,75 @@
+---
+import type { Recording } from "../../lib/types.ts";
+import { fmtDate } from "../../lib/format.ts";
+import SoundCloud from "../embeds/SoundCloud.astro";
+import Bandcamp from "../embeds/Bandcamp.astro";
+import GoogleDriveFile from "../embeds/GoogleDriveFile.astro";
+
+interface Props {
+  recording: Recording;
+}
+const { recording: r } = Astro.props;
+const date = r.recordedDate ? fmtDate(r.recordedDate, { year: "numeric" }) : "";
+---
+
+<article class="fy-rec" data-pagefind-index-attributes>
+  <div class="fy-rec__head">
+    <span class:list={["fy-badge", `fy-badge--${r.recordingType.toLowerCase()}`]}>{r.recordingType}</span>
+    {date && <span class="fy-rec__date">{date}</span>}
+  </div>
+  <h3>{r.title}</h3>
+  {r.description && <p class="fy-rec__desc">{r.description}</p>}
+
+  <div class="fy-rec__player">
+    {r.platform === "SoundCloud" && <SoundCloud url={r.embedUrlOrId} title={r.title} label={`SoundCloud · ${r.recordingType}`} />}
+    {r.platform === "Bandcamp" && <Bandcamp albumId={r.embedUrlOrId} title={r.title} label={`Bandcamp · ${r.recordingType}`} />}
+    {r.platform === "Google Drive" && <GoogleDriveFile idOrUrl={r.embedUrlOrId} kind="audio" title={r.title} label={`Drive · ${r.recordingType}`} />}
+  </div>
+</article>
+
+<style>
+  .fy-rec {
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+    padding: 1.5rem;
+    border: 1px solid var(--color-fy-line);
+    background: var(--color-fy-bg-raised);
+  }
+  .fy-rec__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+  .fy-rec__date {
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-rec h3 {
+    font-size: clamp(1.3rem, 3vw, 1.7rem);
+  }
+  .fy-rec__desc {
+    margin: 0;
+    color: var(--color-fy-ink-dim);
+    font-size: 0.92rem;
+  }
+  .fy-rec__player {
+    margin-top: 0.5rem;
+  }
+  .fy-badge {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid currentColor;
+  }
+  .fy-badge--practice {
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-badge--live {
+    color: var(--color-fy-acid);
+  }
+  .fy-badge--studio {
+    color: var(--color-fy-magenta);
+  }
+</style>

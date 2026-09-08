@@ -1,0 +1,110 @@
+---
+import { NAV, SITE, withBase } from "../config.ts";
+import SocialIcons from "./SocialIcons.astro";
+import SearchBox from "./SearchBox.astro";
+import EmailSignup from "./EmailSignup.astro";
+
+const year = new Date().getFullYear();
+---
+
+<footer class="fy-footer">
+  <div class="fy-shell fy-footer__grid">
+    <div class="fy-footer__brand">
+      <p class="fy-footer__wordmark">THE FUNK YES!</p>
+      <p class="fy-footer__mission">{SITE.mission}</p>
+      <SocialIcons align="start" class="fy-footer__socials" />
+    </div>
+
+    <nav class="fy-footer__nav" aria-label="Footer">
+      <p class="fy-kicker">Pages</p>
+      <ul>
+        <li><a href={withBase("/")} class="fy-link-underline">Home</a></li>
+        {
+          NAV.map((item) => (
+            <li>
+              <a href={withBase(item.href)} class="fy-link-underline">
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="fy-footer__signup">
+      <EmailSignup />
+      <div class="fy-footer__tools">
+        <SearchBox />
+        <a href={withBase("/contact")} class="fy-link-underline">Contact / book us →</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="fy-shell fy-footer__legal">
+    <p>© {year} The Funk Yes! — all grooves reserved.</p>
+    <p class="fy-footer__disclaimer">
+      Recordings and video are hosted on SoundCloud, Bandcamp, YouTube, Google Drive and
+      Instagram and embedded here. Show details can change without notice — confirm with the
+      venue. Not affiliated with, or endorsed by, Elon Musk. We would still take the check.
+    </p>
+  </div>
+</footer>
+
+<style>
+  .fy-footer {
+    margin-top: 6rem;
+    border-top: 2px solid var(--color-fy-ink);
+    padding-block: 3.5rem 2rem;
+    background: var(--color-fy-bg-raised);
+  }
+  .fy-footer__grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+  .fy-footer__wordmark {
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    text-transform: uppercase;
+    margin: 0 0 0.4rem;
+  }
+  .fy-footer__mission {
+    color: var(--color-fy-ink-dim);
+    margin: 0 0 1.1rem;
+    max-width: 22ch;
+  }
+  .fy-footer__nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0.75rem 0 0;
+    display: grid;
+    gap: 0.55rem;
+  }
+  .fy-footer__nav a {
+    font-size: 0.92rem;
+  }
+  .fy-footer__tools {
+    margin-top: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .fy-footer__legal {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink-dim);
+    font-size: 0.8rem;
+    display: grid;
+    gap: 0.6rem;
+  }
+  .fy-footer__disclaimer {
+    max-width: 70ch;
+    margin: 0;
+  }
+</style>

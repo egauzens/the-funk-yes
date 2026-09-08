@@ -1,0 +1,43 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import VideoCard from "../components/cards/VideoCard.astro";
+import { getLiveVideos } from "../lib/contentful.ts";
+
+const videos = await getLiveVideos();
+---
+
+<BaseLayout
+  title="Live Jam-Funk"
+  description="Full-length live video from The Funk Yes! — the horns, the pocket, the crowd."
+>
+  <PageHeader
+    kicker="Watch"
+    title="Live Jam-Funk"
+    intro="Video from the room. Pulled in from YouTube, Instagram and Google Drive — nothing lives on this site but the links."
+  />
+
+  <Section>
+    {
+      videos.length ? (
+        <div class="fy-vid-grid">
+          {videos.map((v) => <VideoCard video={v} />)}
+        </div>
+      ) : (
+        <p class="fy-empty">No video up yet. Come to a show and film it for us.</p>
+      )
+    }
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-vid-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+  .fy-empty {
+    color: var(--color-fy-ink-dim);
+  }
+</style>

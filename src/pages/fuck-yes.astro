@@ -1,0 +1,105 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import VideoCard from "../components/cards/VideoCard.astro";
+import { withBase } from "../config.ts";
+import { getSiteContent, getLiveVideos } from "../lib/contentful.ts";
+
+const [content, videos] = await Promise.all([getSiteContent(), getLiveVideos()]);
+// The alter-ego leans on the after-dark video.
+const darkVideos = videos.slice(0, 4);
+---
+
+<BaseLayout
+  title="The Fuck Yes!"
+  description="The Fuck Yes! — The Funk Yes! after midnight. Darker room, heavier low end, no setlist."
+  mainClass="fy-dark"
+>
+  <PageHeader
+    kicker="After midnight"
+    title="The Fuck Yes!"
+    tone="magenta"
+    intro="Same players. Darker room. Heavier low end. No setlist. This is what happens when the daytime gig ends and nobody goes home."
+  />
+
+  <Section>
+    {
+      content.fuckYesPhoto && (
+        <div class="fy-dark__hero fy-grime">
+          <img src={content.fuckYesPhoto.url} alt={content.fuckYesPhoto.alt} />
+        </div>
+      )
+    }
+    <div class="fy-prose fy-dark__desc" set:html={content.fuckYesDescription} />
+  </Section>
+
+  {
+    darkVideos.length > 0 && (
+      <Section raised labelledby="dark-vid-h">
+        <h2 id="dark-vid-h" class="fy-h">Caught on tape</h2>
+        <div class="fy-vid-grid">
+          {darkVideos.map((v) => <VideoCard video={v} />)}
+        </div>
+      </Section>
+    )
+  }
+
+  <Section labelledby="dark-book-h">
+    <h2 id="dark-book-h" class="fy-h">Want the late set?</h2>
+    <p class="fy-dark__cta-text">
+      The Fuck Yes! plays 21+ rooms, warehouses, and afterparties. Tell us it's late and loud.
+    </p>
+    <a class="fy-btn" href={withBase("/contact")}>Book the late set →</a>
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-dark {
+    --color-fy-acid: var(--color-fy-magenta);
+  }
+  .fy-dark__hero {
+    aspect-ratio: 21 / 9;
+    overflow: hidden;
+    border: 1px solid var(--color-fy-line);
+    margin-bottom: 2rem;
+  }
+  .fy-dark__hero img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fy-dark__desc {
+    max-width: 52ch;
+    font-size: 1.15rem;
+  }
+  .fy-h {
+    font-size: clamp(1.75rem, 5vw, 3rem);
+    margin-bottom: 1.25rem;
+  }
+  .fy-vid-grid {
+    display: grid;
+    gap: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  }
+  .fy-dark__cta-text {
+    max-width: 46ch;
+    color: var(--color-fy-ink-dim);
+    margin-bottom: 1.5rem;
+  }
+  .fy-btn {
+    display: inline-block;
+    padding: 0.8rem 1.6rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--color-fy-magenta);
+    color: var(--color-fy-magenta);
+  }
+  .fy-btn:hover,
+  .fy-btn:focus-visible {
+    background: var(--color-fy-magenta);
+    color: #fff;
+  }
+</style>

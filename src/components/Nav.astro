@@ -1,0 +1,55 @@
+---
+import { NAV, withBase } from "../config.ts";
+
+interface Props {
+  class?: string;
+  id?: string;
+}
+const { class: className, id } = Astro.props;
+
+const current = Astro.url.pathname.replace(/\/+$/, "") || "/";
+const isCurrent = (href: string) => {
+  const target = withBase(href).replace(/\/+$/, "");
+  return current === target;
+};
+---
+
+<nav class:list={["fy-nav", className]} id={id} aria-label="Primary">
+  <ul>
+    {
+      NAV.map((item) => (
+        <li>
+          <a
+            href={withBase(item.href)}
+            class="fy-link-underline"
+            aria-current={isCurrent(item.href) ? "page" : undefined}
+          >
+            {item.label}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .fy-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.1rem 1.4rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .fy-nav a {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fy-ink);
+  }
+  .fy-nav a[aria-current="page"] {
+    color: var(--color-fy-acid);
+  }
+</style>

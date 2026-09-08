@@ -1,0 +1,203 @@
+@import "tailwindcss";
+
+/* Self-hosted fonts (no external CDN, no layout shift). Swap these three
+   imports + the --font-* tokens below to re-skin the whole site. */
+@import "@fontsource/anton/400.css";
+@import "@fontsource/space-grotesk/400.css";
+@import "@fontsource/space-grotesk/500.css";
+@import "@fontsource/space-grotesk/700.css";
+@import "@fontsource/jetbrains-mono/400.css";
+@import "@fontsource/jetbrains-mono/700.css";
+
+@theme {
+  --color-fy-bg: #0b0b0c;
+  --color-fy-bg-raised: #141416;
+  --color-fy-ink: #f2ede1;
+  --color-fy-ink-dim: #a7a297;
+  --color-fy-acid: #d8ff3e;
+  --color-fy-magenta: #ff2e88;
+  --color-fy-line: #2a2a2e;
+
+  --font-display: "Anton", "Arial Narrow", system-ui, sans-serif;
+  --font-body: "Space Grotesk", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --ease-funk: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* ------------------------------- base ---------------------------------- */
+
+:root {
+  color-scheme: dark;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--color-fy-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  margin: 0;
+  background: var(--color-fy-bg);
+  color: var(--color-fy-ink);
+  font-family: var(--font-body);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Chunky, always-visible focus ring. */
+:focus-visible {
+  outline: 3px solid var(--color-fy-acid);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--color-fy-magenta);
+  color: #fff;
+}
+
+/* --------------------------- film-grain overlay ------------------------ */
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* ------------------------------ utilities ---------------------------- */
+
+@layer components {
+  .fy-shell {
+    width: min(100% - 2.5rem, 78rem);
+    margin-inline: auto;
+  }
+
+  .fy-kicker {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--color-fy-acid);
+  }
+
+  /* Duotone photo treatment — funk (acid) side. */
+  .fy-duotone {
+    filter: grayscale(1) contrast(1.15) brightness(0.9);
+    background: var(--color-fy-magenta);
+  }
+  .fy-duotone > img {
+    mix-blend-mode: luminosity;
+    opacity: 0.92;
+  }
+
+  /* Grimy treatment — The Fuck Yes! side. */
+  .fy-grime {
+    filter: grayscale(1) contrast(1.4) brightness(0.55);
+  }
+
+  .fy-link-underline {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 2px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 0.3s var(--ease-funk);
+  }
+  .fy-link-underline:hover,
+  .fy-link-underline:focus-visible {
+    background-size: 100% 2px;
+  }
+
+  /* Rich-text blocks coming out of Contentful. */
+  .fy-prose > :first-child {
+    margin-top: 0;
+  }
+  .fy-prose p {
+    margin: 0 0 1em;
+  }
+  .fy-prose a {
+    color: var(--color-fy-acid);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .fy-prose strong {
+    color: #fff;
+  }
+  .fy-prose ul {
+    margin: 0 0 1em 1.1em;
+    list-style: square;
+  }
+}
+
+/* ------------------------------- marquee ---------------------------- */
+
+.fy-marquee {
+  overflow: hidden;
+  white-space: nowrap;
+  border-block: 2px solid var(--color-fy-ink);
+}
+.fy-marquee__track {
+  display: inline-block;
+  padding-block: 0.35em;
+  animation: fy-scroll 26s linear infinite;
+}
+.fy-marquee:hover .fy-marquee__track {
+  animation-play-state: paused;
+}
+@keyframes fy-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .fy-marquee__track {
+    animation: none;
+    padding-left: 1rem;
+  }
+}
+
+/* --------------------------- pagefind modal ------------------------ */
+
+:root {
+  --pagefind-ui-scale: 0.9;
+  --pagefind-ui-primary: var(--color-fy-ink);
+  --pagefind-ui-text: var(--color-fy-ink);
+  --pagefind-ui-background: var(--color-fy-bg-raised);
+  --pagefind-ui-border: var(--color-fy-line);
+  --pagefind-ui-tag: var(--color-fy-bg);
+  --pagefind-ui-border-radius: 2px;
+  --pagefind-ui-font: var(--font-body);
+}

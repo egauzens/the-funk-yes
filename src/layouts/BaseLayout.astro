@@ -1,0 +1,77 @@
+---
+import "../styles/global.css";
+import { SITE, withBase } from "../config.ts";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title?: string;
+  description?: string;
+  /** Set false on utility pages you don't want in search. */
+  indexable?: boolean;
+  /** Extra class on <main>. */
+  mainClass?: string;
+}
+const {
+  title,
+  description = SITE.description,
+  indexable = true,
+  mainClass,
+} = Astro.props;
+
+const fullTitle = title ? `${title} — ${SITE.title}` : `${SITE.title} // The Fuck Yes!`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href;
+const ogImage = new URL(withBase("/og-image.png"), Astro.site ?? Astro.url).href;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={withBase("/favicon.svg")} type="image/svg+xml" />
+    <meta name="theme-color" content="#0b0b0c" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    {!indexable && <meta name="robots" content="noindex" />}
+  </head>
+  <body>
+    <a href="#main" class="fy-skip">Skip to content</a>
+    <Header />
+    <main id="main" class:list={["fy-main", mainClass]} data-pagefind-body={indexable ? "" : undefined}>
+      <slot />
+    </main>
+    <Footer />
+
+    <style>
+      .fy-skip {
+        position: absolute;
+        left: 1rem;
+        top: -3rem;
+        z-index: 200;
+        padding: 0.6rem 1rem;
+        background: var(--color-fy-acid);
+        color: #0b0b0c;
+        font-family: var(--font-mono);
+        font-weight: 700;
+        text-transform: uppercase;
+        transition: top 0.2s var(--ease-funk);
+      }
+      .fy-skip:focus {
+        top: 1rem;
+      }
+      .fy-main {
+        display: block;
+      }
+    </style>
+  </body>
+</html>

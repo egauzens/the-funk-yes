@@ -1,0 +1,50 @@
+---
+import EmbedFrame from "./EmbedFrame.astro";
+
+interface Props {
+  /** Bandcamp album id (digits), track id ("track=123"), or a full EmbeddedPlayer URL. */
+  albumId: string;
+  title?: string;
+  label?: string;
+}
+const { albumId, title = "Bandcamp player", label } = Astro.props;
+
+let src = "";
+if (/^https?:\/\/bandcamp\.com\/EmbeddedPlayer/i.test(albumId)) {
+  src = albumId;
+} else if (/^\d+$/.test(albumId)) {
+  src =
+    `https://bandcamp.com/EmbeddedPlayer/album=${albumId}/size=large/bgcol=141416/` +
+    "linkcol=d8ff3e/tracklist=true/artwork=small/transparent=true/";
+} else if (/^track=\d+$/.test(albumId)) {
+  src =
+    `https://bandcamp.com/EmbeddedPlayer/${albumId}/size=large/bgcol=141416/` +
+    "linkcol=d8ff3e/artwork=small/transparent=true/";
+}
+const height = 330;
+---
+
+<EmbedFrame label={label}>
+  {
+    src ? (
+      <iframe
+        src={src}
+        title={title}
+        height={height}
+        loading="lazy"
+        seamless
+        style={`height:${height}px`}
+      />
+    ) : (
+      <p class="fy-embed-missing">Set a numeric Bandcamp album id or EmbeddedPlayer URL for “{title}”.</p>
+    )
+  }
+</EmbedFrame>
+
+<style>
+  .fy-embed-missing {
+    padding: 1.5rem;
+    color: var(--color-fy-ink-dim);
+    font-size: 0.85rem;
+  }
+</style>

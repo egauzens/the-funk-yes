@@ -1,0 +1,74 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import ContactForm from "../components/ContactForm.astro";
+import EmailSignup from "../components/EmailSignup.astro";
+import { SITE } from "../config.ts";
+import { getSiteContent } from "../lib/contentful.ts";
+
+const content = await getSiteContent();
+---
+
+<BaseLayout
+  title="Book Us"
+  description="Bring The Funk Yes! to your backyard, bar, benefit or street corner. Sliding scale, free to whatever you've got."
+>
+  <PageHeader
+    kicker="Hire us"
+    title="Bring the funk to YOUR ___"
+    intro="Backyards, streets, bars, restaurants, benefits, warehouses, weddings, wakes, parking lots. If there's a plug and a pulse, we're in."
+  />
+
+  <Section>
+    <div class="fy-contact-grid">
+      <div class="fy-prose fy-contact-grid__copy" set:html={content.bookingBlurb} />
+      <div>
+        <ContactForm variant="full" />
+        <p class="fy-contact-grid__alt">
+          Prefer email? <a class="fy-link-underline" href={`mailto:${SITE.bookingEmail}`}>{SITE.bookingEmail}</a>
+        </p>
+      </div>
+    </div>
+  </Section>
+
+  <Section raised labelledby="list-h">
+    <h2 id="list-h" class="fy-h">Not booking, just lurking?</h2>
+    <p class="fy-lede">Get an email when we announce shows and drop recordings. No more than monthly.</p>
+    <EmailSignup heading="Join the funk list" />
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-contact-grid {
+    display: grid;
+    gap: 2.5rem;
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  .fy-contact-grid__copy {
+    font-size: 1.1rem;
+  }
+  .fy-contact-grid__alt {
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-h {
+    font-size: clamp(1.6rem, 4.5vw, 2.5rem);
+    margin-bottom: 0.75rem;
+  }
+  .fy-lede {
+    color: var(--color-fy-ink-dim);
+    max-width: 50ch;
+    margin: 0 0 1.5rem;
+  }
+  @media (max-width: 52rem) {
+    .fy-contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

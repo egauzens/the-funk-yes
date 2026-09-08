@@ -1,0 +1,84 @@
+---
+import { SOCIALS, type SocialIcon } from "../config.ts";
+
+interface Props {
+  class?: string;
+  /** Visual size of each icon in px. */
+  size?: number;
+  align?: "center" | "start";
+}
+const { class: className, size = 22, align = "center" } = Astro.props;
+
+/* Simple monochrome glyph paths (24x24 viewBox). */
+const PATHS: Record<SocialIcon, string> = {
+  instagram:
+    "M12 2.2c3.2 0 3.6 0 4.9.07 1.2.06 1.8.25 2.2.42.6.22 1 .48 1.4.9.42.4.68.8.9 1.4.17.4.36 1 .42 2.2.07 1.3.07 1.7.07 4.9s0 3.6-.07 4.9c-.06 1.2-.25 1.8-.42 2.2a3.7 3.7 0 0 1-.9 1.4c-.4.42-.8.68-1.4.9-.4.17-1 .36-2.2.42-1.3.07-1.7.07-4.9.07s-3.6 0-4.9-.07c-1.2-.06-1.8-.25-2.2-.42a3.7 3.7 0 0 1-1.4-.9 3.7 3.7 0 0 1-.9-1.4c-.17-.4-.36-1-.42-2.2C2.2 15.6 2.2 15.2 2.2 12s0-3.6.07-4.9c.06-1.2.25-1.8.42-2.2.22-.6.48-1 .9-1.4.4-.42.8-.68 1.4-.9.4-.17 1-.36 2.2-.42C8.4 2.2 8.8 2.2 12 2.2Zm0 3.4a6.4 6.4 0 1 0 0 12.8 6.4 6.4 0 0 0 0-12.8Zm0 2.2a4.2 4.2 0 1 1 0 8.4 4.2 4.2 0 0 1 0-8.4Zm6.6-3.9a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3Z",
+  soundcloud:
+    "M1 15.2c0-1.6.6-3 1.6-4v7.9C1.6 18.1 1 16.8 1 15.2Zm3.1-5.3c.3-.1.6-.2 1-.2v9.2h-1V9.9Zm2.4-.4c.3 0 .7.1 1 .2v9.2h-1V9.5Zm2.4.6c.3.2.6.4.9.7v7.7h-1V10Zm2.3 1.5v6.9h-1v-8c.4.3.7.7 1 1.1ZM23 14.5c0 2.3-1.9 4.2-4.2 4.2h-5.6V7.6c.8-.6 1.9-1 3-1 2.6 0 4.7 2 4.9 4.5.6-.3 1.2-.4 1.8-.4.1 1 .1 2.6.3 3.8Z",
+  bandcamp: "M2 6h13.5L22 18H8.5L2 6Z",
+  youtube:
+    "M23 12s0-3.1-.4-4.6a2.9 2.9 0 0 0-2-2C18.8 5 12 5 12 5s-6.8 0-8.6.4a2.9 2.9 0 0 0-2 2C1 8.9 1 12 1 12s0 3.1.4 4.6c.2 1 .9 1.7 2 2C5.2 19 12 19 12 19s6.8 0 8.6-.4a2.9 2.9 0 0 0 2-2C23 15.1 23 12 23 12ZM9.8 15.2V8.8l5.6 3.2-5.6 3.2Z",
+  spotify:
+    "M12 1.8a10.2 10.2 0 1 0 0 20.4 10.2 10.2 0 0 0 0-20.4Zm4.7 14.7a.9.9 0 0 1-1.2.3c-3.3-2-7.5-2.5-12.4-1.3a.9.9 0 1 1-.4-1.7c5.3-1.2 9.9-.7 13.6 1.5.4.3.6.8.4 1.2Zm1.2-3a1.1 1.1 0 0 1-1.5.4c-3.8-2.3-9.5-3-14-1.6a1.1 1.1 0 1 1-.6-2.1c5.1-1.5 11.4-.8 15.7 1.9.5.3.7 1 .4 1.5Zm.1-3.1C15.4 7.6 8.6 7.3 4.7 8.5A1.3 1.3 0 1 1 4 6c4.5-1.4 12-1 16.6 1.7a1.3 1.3 0 1 1-1.3 2.3Z",
+  email:
+    "M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1Zm1.4 2L12 12.3 19.6 7H4.4ZM20 8.6l-8 5.6-8-5.6V17h16V8.6Z",
+};
+---
+
+<ul class:list={["fy-socials", className]} data-align={align}>
+  {
+    SOCIALS.map((s) => (
+      <li>
+        <a
+          href={s.href}
+          rel={s.href.startsWith("http") ? "noopener noreferrer" : undefined}
+          target={s.href.startsWith("http") ? "_blank" : undefined}
+          aria-label={s.label}
+          title={s.label}
+        >
+          <svg
+            width={size}
+            height={size}
+            viewBox="0 0 24 24"
+            fill="currentColor"
+            aria-hidden="true"
+          >
+            <path d={PATHS[s.icon]} />
+          </svg>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .fy-socials {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.85rem;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .fy-socials[data-align="center"] {
+    justify-content: center;
+  }
+  .fy-socials a {
+    display: grid;
+    place-items: center;
+    width: 2.6rem;
+    height: 2.6rem;
+    border: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink);
+    transition:
+      color 0.2s var(--ease-funk),
+      border-color 0.2s var(--ease-funk),
+      transform 0.2s var(--ease-funk);
+  }
+  .fy-socials a:hover,
+  .fy-socials a:focus-visible {
+    color: var(--color-fy-acid);
+    border-color: var(--color-fy-acid);
+    transform: translateY(-2px);
+  }
+</style>

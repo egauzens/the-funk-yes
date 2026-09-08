@@ -1,0 +1,175 @@
+---
+import { withBase } from "../config.ts";
+
+interface Props {
+  /** "button" (header/footer trigger) or "inline" (always-open field). */
+  variant?: "button" | "inline";
+  class?: string;
+}
+const { variant = "button", class: className } = Astro.props;
+
+const bundlePath = withBase("/pagefind/");
+const uiScript = withBase("/pagefind/pagefind-ui.js");
+const uiCss = withBase("/pagefind/pagefind-ui.css");
+---
+
+<div class:list={["fy-search", className]} data-variant={variant} data-bundle={bundlePath} data-ui={uiScript} data-css={uiCss}>
+  {
+    variant === "button" ? (
+      <button type="button" class="fy-search__trigger" aria-haspopup="dialog">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true">
+          <circle cx="11" cy="11" r="7" />
+          <line x1="21" y1="21" x2="16.65" y2="16.65" />
+        </svg>
+        <span>Search</span>
+      </button>
+    ) : null
+  }
+
+  <dialog class="fy-search__dialog" aria-label="Search the site">
+    <form method="dialog" class="fy-search__close-row">
+      <button value="close" class="fy-search__close" aria-label="Close search">Close ✕</button>
+    </form>
+    <div class="fy-search__mount" data-inline={variant === "inline" ? "true" : "false"}></div>
+    <p class="fy-search__hint">Search is generated at build time — run <code>npm run build</code> to see results locally.</p>
+  </dialog>
+</div>
+
+<style>
+  .fy-search__trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.9rem;
+    background: transparent;
+    border: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: border-color 0.2s var(--ease-funk), color 0.2s var(--ease-funk);
+  }
+  .fy-search__trigger:hover,
+  .fy-search__trigger:focus-visible {
+    border-color: var(--color-fy-acid);
+    color: var(--color-fy-acid);
+  }
+
+  .fy-search__dialog {
+    width: min(100% - 2rem, 40rem);
+    margin-inline: auto;
+    margin-top: 8vh;
+    padding: 1.25rem;
+    background: var(--color-fy-bg-raised);
+    color: var(--color-fy-ink);
+    border: 1px solid var(--color-fy-line);
+    border-radius: 3px;
+  }
+  .fy-search__dialog::backdrop {
+    background: rgba(0, 0, 0, 0.72);
+  }
+  .fy-search__close-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 0.5rem;
+  }
+  .fy-search__close {
+    background: transparent;
+    border: 0;
+    color: var(--color-fy-ink-dim);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .fy-search__hint {
+    margin: 0.75rem 0 0;
+    font-size: 0.8rem;
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-search__hint code {
+    font-family: var(--font-mono);
+    color: var(--color-fy-acid);
+  }
+  /* Once results exist the hint is noise. */
+  .fy-search__mount:not(:empty) + .fy-search__hint {
+    display: none;
+  }
+
+  .fy-search[data-variant="inline"] .fy-search__dialog {
+    display: block;
+    position: static;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    width: 100%;
+  }
+  .fy-search[data-variant="inline"] .fy-search__close-row {
+    display: none;
+  }
+</style>
+
+<script>
+  class FunkSearch {
+    root: HTMLElement;
+    dialog: HTMLDialogElement;
+    mount: HTMLElement;
+    loaded = false;
+
+    constructor(root: HTMLElement) {
+      this.root = root;
+      this.dialog = root.querySelector(".fy-search__dialog") as HTMLDialogElement;
+      this.mount = root.querySelector(".fy-search__mount") as HTMLElement;
+
+      const trigger = root.querySelector(".fy-search__trigger");
+      trigger?.addEventListener("click", () => this.open());
+
+      if (this.mount.dataset.inline === "true") {
+        this.load();
+      }
+    }
+
+    async open() {
+      await this.load();
+      if (typeof this.dialog.showModal === "function") this.dialog.showModal();
+      this.mount.querySelector<HTMLInputElement>("input")?.focus();
+    }
+
+    async load() {
+      if (this.loaded) return;
+      this.loaded = true;
+
+      const css = this.root.dataset.css!;
+      if (!document.querySelector(`link[href="${css}"]`)) {
+        const link = document.createElement("link");
+        link.rel = "stylesheet";
+        link.href = css;
+        document.head.appendChild(link);
+      }
+
+      try {
+        const mod = await import(/* @vite-ignore */ this.root.dataset.ui!);
+        const PagefindUI = mod.PagefindUI ?? (window as any).PagefindUI;
+        new PagefindUI({
+          element: this.mount,
+          bundlePath: this.root.dataset.bundle,
+          showImages: false,
+          showSubResults: true,
+          resetStyles: false,
+        });
+      } catch {
+        this.mount.innerHTML =
+          '<p style="color:var(--color-fy-ink-dim);font-size:.85rem">Search index not found. It is created by <code>npm run build</code>.</p>';
+      }
+    }
+  }
+
+  document
+    .querySelectorAll<HTMLElement>(".fy-search")
+    .forEach((el) => new FunkSearch(el));
+</script>

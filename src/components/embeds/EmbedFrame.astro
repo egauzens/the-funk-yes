@@ -1,0 +1,57 @@
+---
+/**
+ * Shared chrome for every third-party embed: a labelled, bordered box with a
+ * fixed aspect ratio (or natural height for audio players).
+ */
+interface Props {
+  label?: string;
+  /** e.g. "16 / 9". Omit for audio players that set their own height. */
+  ratio?: string;
+  class?: string;
+}
+const { label, ratio, class: className } = Astro.props;
+---
+
+<figure class:list={["fy-embed", className]} style={ratio ? `--fy-embed-ratio:${ratio}` : undefined} data-natural={ratio ? undefined : "true"}>
+  <div class="fy-embed__frame">
+    <slot />
+  </div>
+  {label && <figcaption>{label}</figcaption>}
+</figure>
+
+<style>
+  .fy-embed {
+    margin: 0;
+    border: 1px solid var(--color-fy-line);
+    background: #000;
+  }
+  .fy-embed__frame {
+    position: relative;
+    aspect-ratio: var(--fy-embed-ratio, 16 / 9);
+  }
+  .fy-embed[data-natural] .fy-embed__frame {
+    aspect-ratio: auto;
+  }
+  .fy-embed :global(iframe),
+  .fy-embed :global(video) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    display: block;
+  }
+  .fy-embed[data-natural] :global(iframe) {
+    position: static;
+    height: 100%;
+  }
+  .fy-embed figcaption {
+    padding: 0.6rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fy-ink-dim);
+    border-top: 1px solid var(--color-fy-line);
+  }
+</style>

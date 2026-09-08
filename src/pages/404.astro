@@ -1,0 +1,45 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import Section from "../components/Section.astro";
+import { NAV, withBase } from "../config.ts";
+---
+
+<BaseLayout title="Lost the beat" indexable={false}>
+  <Section size="lg">
+    <p class="fy-kicker">404</p>
+    <h1 class="fy-404__title">You lost the beat.</h1>
+    <p class="fy-404__text">
+      That page isn't here. It might've been a practice-room idea that didn't make the set.
+    </p>
+    <ul class="fy-404__links">
+      <li><a href={withBase("/")} class="fy-link-underline">← Back to the top</a></li>
+      {NAV.map((item) => (
+        <li><a href={withBase(item.href)} class="fy-link-underline">{item.label}</a></li>
+      ))}
+    </ul>
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-404__title {
+    font-size: clamp(2.5rem, 10vw, 6rem);
+    margin: 0.4rem 0 1rem;
+  }
+  .fy-404__text {
+    color: var(--color-fy-ink-dim);
+    max-width: 40ch;
+    margin-bottom: 2rem;
+  }
+  .fy-404__links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 1.5rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+</style>

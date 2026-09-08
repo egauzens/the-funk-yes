@@ -1,0 +1,131 @@
+---
+import { SITE, withBase } from "../config.ts";
+import Logo from "./Logo.astro";
+import Nav from "./Nav.astro";
+import SearchBox from "./SearchBox.astro";
+---
+
+<header class="fy-header" data-fy-header>
+  <div class="fy-shell fy-header__inner">
+    <a href={withBase("/")} class="fy-header__brand" aria-label={`${SITE.title} — home`}>
+      <Logo class="fy-header__logo" />
+    </a>
+
+    <button
+      type="button"
+      class="fy-header__toggle"
+      aria-expanded="false"
+      aria-controls="fy-primary-nav"
+      data-fy-nav-toggle
+    >
+      <span></span><span></span><span></span>
+      <span class="sr-only">Menu</span>
+    </button>
+
+    <div class="fy-header__right" id="fy-primary-nav" data-fy-nav-panel>
+      <Nav />
+      <SearchBox class="fy-header__search" />
+    </div>
+  </div>
+</header>
+
+<style>
+  .fy-header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: color-mix(in srgb, var(--color-fy-bg) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--color-fy-line);
+    transition: padding 0.25s var(--ease-funk);
+  }
+  .fy-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    padding-block: 1.1rem;
+  }
+  .fy-header[data-shrunk] .fy-header__inner {
+    padding-block: 0.55rem;
+  }
+  .fy-header__logo {
+    font-size: clamp(1.15rem, 2.4vw, 1.6rem);
+  }
+  .fy-header__right {
+    display: flex;
+    align-items: center;
+    gap: 1.75rem;
+  }
+  .fy-header__toggle {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    width: 2.4rem;
+    height: 2.4rem;
+    padding: 0.5rem;
+    background: transparent;
+    border: 1px solid var(--color-fy-line);
+    cursor: pointer;
+  }
+  .fy-header__toggle span:not(.sr-only) {
+    display: block;
+    height: 2px;
+    background: var(--color-fy-ink);
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  @media (max-width: 60rem) {
+    .fy-header__toggle {
+      display: flex;
+    }
+    .fy-header__right {
+      position: absolute;
+      inset: 100% 0 auto 0;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 1.25rem;
+      padding: 1.5rem clamp(1.25rem, 5vw, 2rem);
+      background: var(--color-fy-bg);
+      border-bottom: 1px solid var(--color-fy-line);
+    }
+    .fy-header__right:not([data-open]) {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>("[data-fy-header]");
+  const toggle = document.querySelector<HTMLButtonElement>("[data-fy-nav-toggle]");
+  const panel = document.querySelector<HTMLElement>("[data-fy-nav-panel]");
+
+  toggle?.addEventListener("click", () => {
+    const open = panel?.toggleAttribute("data-open");
+    toggle.setAttribute("aria-expanded", String(Boolean(open)));
+  });
+
+  // Shrink the header once the user scrolls past the hero-ish fold.
+  let ticking = false;
+  const onScroll = () => {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(() => {
+      header?.toggleAttribute("data-shrunk", window.scrollY > 80);
+      ticking = false;
+    });
+  };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+</script>

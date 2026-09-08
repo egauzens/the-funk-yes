@@ -1,0 +1,105 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PageHeader from "../components/PageHeader.astro";
+import Section from "../components/Section.astro";
+import RecordingCard from "../components/cards/RecordingCard.astro";
+import { getRecordings } from "../lib/contentful.ts";
+import { getSiteContent } from "../lib/contentful.ts";
+
+const [recordings, content] = await Promise.all([getRecordings(), getSiteContent()]);
+const types = ["Practice", "Live", "Studio"] as const;
+const counts = Object.fromEntries(
+  types.map((t) => [t, recordings.filter((r) => r.recordingType === t).length]),
+);
+---
+
+<BaseLayout
+  title="Funk Files"
+  description="Every Funk Yes! recording — practice-room tapes, live sets and studio cuts, pulled from SoundCloud, Bandcamp and Drive."
+>
+  <PageHeader kicker="Listen" title="Funk Files" intro={content.funkFilesIntro} />
+
+  <Section>
+    <div class="fy-filter" role="group" aria-label="Filter recordings by type">
+      <button type="button" data-filter="all" aria-pressed="true">All ({recordings.length})</button>
+      {
+        types.map((t) => (
+          <button type="button" data-filter={t} aria-pressed="false">
+            {t} ({counts[t]})
+          </button>
+        ))
+      }
+    </div>
+
+    <div class="fy-files" data-active="all">
+      {
+        recordings.map((r) => (
+          <div class="fy-files__item" data-type={r.recordingType}>
+            <RecordingCard recording={r} />
+          </div>
+        ))
+      }
+    </div>
+    <p class="fy-files__none" hidden>No recordings of that kind yet.</p>
+  </Section>
+</BaseLayout>
+
+<style>
+  .fy-filter {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 2rem;
+  }
+  .fy-filter button {
+    padding: 0.5rem 1rem;
+    background: transparent;
+    border: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink-dim);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .fy-filter button[aria-pressed="true"] {
+    color: #0b0b0c;
+    background: var(--color-fy-acid);
+    border-color: var(--color-fy-acid);
+  }
+  .fy-files {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 20rem), 1fr));
+  }
+  .fy-files__item[hidden] {
+    display: none;
+  }
+  .fy-files__none {
+    color: var(--color-fy-ink-dim);
+    margin-top: 1.5rem;
+  }
+</style>
+
+<script>
+  const wrap = document.querySelector<HTMLElement>(".fy-files")!;
+  const buttons = document.querySelectorAll<HTMLButtonElement>(".fy-filter button");
+  const items = document.querySelectorAll<HTMLElement>(".fy-files__item");
+  const none = document.querySelector<HTMLElement>(".fy-files__none")!;
+
+  buttons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const filter = btn.dataset.filter!;
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+      wrap.dataset.active = filter;
+      let shown = 0;
+      items.forEach((item) => {
+        const match = filter === "all" || item.dataset.type === filter;
+        item.hidden = !match;
+        if (match) shown++;
+      });
+      none.hidden = shown > 0;
+    });
+  });
+</script>

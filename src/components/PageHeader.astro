@@ -1,0 +1,38 @@
+---
+interface Props {
+  kicker?: string;
+  title: string;
+  intro?: string;
+  /** "magenta" tints the page header for The Fuck Yes! side. */
+  tone?: "acid" | "magenta";
+}
+const { kicker, title, intro, tone = "acid" } = Astro.props;
+---
+
+<header class:list={["fy-pagehead", `fy-pagehead--${tone}`]}>
+  <div class="fy-shell">
+    {kicker && <p class="fy-kicker">{kicker}</p>}
+    <h1>{title}</h1>
+    {intro && <p class="fy-pagehead__intro">{intro}</p>}
+  </div>
+</header>
+
+<style>
+  .fy-pagehead {
+    padding-block: 3.5rem 2.5rem;
+    border-bottom: 2px solid var(--color-fy-ink);
+  }
+  .fy-pagehead h1 {
+    font-size: clamp(2.5rem, 9vw, 6rem);
+    margin-top: 0.4rem;
+  }
+  .fy-pagehead--magenta .fy-kicker {
+    color: var(--color-fy-magenta);
+  }
+  .fy-pagehead__intro {
+    margin: 1.25rem 0 0;
+    max-width: 58ch;
+    color: var(--color-fy-ink-dim);
+    font-size: clamp(1.05rem, 2.4vw, 1.3rem);
+  }
+</style>

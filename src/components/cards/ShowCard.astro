@@ -1,0 +1,151 @@
+---
+import type { Show } from "../../lib/types.ts";
+import { dayParts, fmtTime } from "../../lib/format.ts";
+
+interface Props {
+  show: Show;
+  compact?: boolean;
+}
+const { show, compact = false } = Astro.props;
+const { month, day, year } = dayParts(show.dateTime);
+const time = fmtTime(show.dateTime);
+const cancelled = show.status === "Cancelled";
+---
+
+<article class:list={["fy-show", { "fy-show--compact": compact, "fy-show--cancelled": cancelled }]}>
+  <div class="fy-show__date" aria-hidden="true">
+    <span class="fy-show__month">{month}</span>
+    <span class="fy-show__day">{day}</span>
+    <span class="fy-show__year">{year}</span>
+  </div>
+
+  <div class="fy-show__body">
+    <h3>{show.title}</h3>
+    <p class="fy-show__where">
+      <span>{show.venueName}</span>
+      {show.city && <span class="fy-show__city">· {show.city}</span>}
+    </p>
+    {!compact && show.venueAddress && <p class="fy-show__addr">{show.venueAddress}</p>}
+    {!compact && show.description && <p class="fy-show__desc">{show.description}</p>}
+
+    <p class="fy-show__meta">
+      <time datetime={show.dateTime}>{time}</time>
+      <span class:list={["fy-badge", `fy-badge--${show.pricing.replace(/\s+/g, "-").toLowerCase()}`]}>
+        {show.pricing}
+      </span>
+      {show.status !== "Confirmed" && <span class="fy-badge fy-badge--status">{show.status}</span>}
+    </p>
+  </div>
+
+  {
+    show.ticketUrl && !cancelled && (
+      <a class="fy-show__cta" href={show.ticketUrl} target="_blank" rel="noopener noreferrer">
+        {show.pricing === "Ticketed" ? "Tickets" : "Details"} →
+      </a>
+    )
+  }
+</article>
+
+<style>
+  .fy-show {
+    display: grid;
+    grid-template-columns: 5.5rem 1fr auto;
+    gap: 1.25rem;
+    align-items: start;
+    padding: 1.25rem 0;
+    border-top: 1px solid var(--color-fy-line);
+  }
+  .fy-show--cancelled {
+    opacity: 0.5;
+  }
+  .fy-show--cancelled h3 {
+    text-decoration: line-through;
+  }
+  .fy-show__date {
+    display: grid;
+    justify-items: center;
+    padding: 0.5rem 0;
+    border: 1px solid var(--color-fy-line);
+    background: var(--color-fy-bg-raised);
+  }
+  .fy-show__month {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.14em;
+    color: var(--color-fy-acid);
+  }
+  .fy-show__day {
+    font-family: var(--font-display);
+    font-size: 2rem;
+    line-height: 1;
+  }
+  .fy-show__year {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-show__body h3 {
+    font-size: clamp(1.3rem, 3vw, 1.8rem);
+  }
+  .fy-show__where {
+    margin: 0.4rem 0 0;
+    font-weight: 500;
+  }
+  .fy-show__city {
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-show__addr,
+  .fy-show__desc {
+    margin: 0.35rem 0 0;
+    color: var(--color-fy-ink-dim);
+    font-size: 0.9rem;
+  }
+  .fy-show__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0.7rem 0 0;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .fy-badge {
+    padding: 0.2rem 0.55rem;
+    border: 1px solid currentColor;
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-badge--free {
+    color: var(--color-fy-acid);
+  }
+  .fy-badge--sliding-scale {
+    color: var(--color-fy-ink);
+  }
+  .fy-badge--ticketed {
+    color: var(--color-fy-magenta);
+  }
+  .fy-badge--status {
+    color: var(--color-fy-magenta);
+  }
+  .fy-show__cta {
+    align-self: center;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fy-acid);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40rem) {
+    .fy-show {
+      grid-template-columns: 4.25rem 1fr;
+    }
+    .fy-show__cta {
+      grid-column: 2;
+      justify-self: start;
+    }
+  }
+</style>

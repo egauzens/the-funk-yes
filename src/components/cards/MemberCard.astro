@@ -1,0 +1,119 @@
+---
+import type { BandMember } from "../../lib/types.ts";
+
+interface Props {
+  member: BandMember;
+  /** Show the long HTML bio (about page) instead of the one-liner. */
+  detailed?: boolean;
+}
+const { member: m, detailed = false } = Astro.props;
+---
+
+<article class:list={["fy-member", { "fy-member--detailed": detailed }]}>
+  <div class="fy-member__photo fy-duotone">
+    {
+      m.photo ? (
+        <img src={m.photo.url} alt={m.photo.alt} loading="lazy" width={m.photo.width} height={m.photo.height} />
+      ) : (
+        <span class="fy-member__initials" aria-hidden="true">
+          {m.name.split(" ").map((p) => p[0]).join("")}
+        </span>
+      )
+    }
+  </div>
+  <div class="fy-member__body">
+    <h3>{m.name}</h3>
+    <p class="fy-member__role">{m.instrumentRole}</p>
+    {detailed && m.longBio ? (
+      <div class="fy-prose" set:html={m.longBio} />
+    ) : (
+      <p class="fy-member__bio">{m.shortBio}</p>
+    )}
+    {
+      m.socials && Object.keys(m.socials).length > 0 && (
+        <ul class="fy-member__socials">
+          {Object.entries(m.socials).map(([k, href]) => (
+            <li>
+              <a href={href} target="_blank" rel="noopener noreferrer" class="fy-link-underline">
+                {k}
+              </a>
+            </li>
+          ))}
+        </ul>
+      )
+    }
+  </div>
+</article>
+
+<style>
+  .fy-member {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-fy-line);
+    background: var(--color-fy-bg-raised);
+  }
+  .fy-member__photo {
+    aspect-ratio: 4 / 5;
+    display: grid;
+    place-items: center;
+    overflow: hidden;
+  }
+  .fy-member__photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fy-member__initials {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    color: #fff;
+  }
+  .fy-member__body {
+    padding: 1.25rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .fy-member h3 {
+    font-size: 1.5rem;
+  }
+  .fy-member__role {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fy-acid);
+    margin: 0;
+  }
+  .fy-member__bio {
+    margin: 0.3rem 0 0;
+    color: var(--color-fy-ink-dim);
+    font-size: 0.92rem;
+  }
+  .fy-member__socials {
+    display: flex;
+    gap: 0.9rem;
+    padding: 0;
+    margin: 0.5rem 0 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .fy-member--detailed {
+    flex-direction: row;
+  }
+  .fy-member--detailed .fy-member__photo {
+    flex: 0 0 40%;
+    aspect-ratio: auto;
+  }
+  @media (max-width: 46rem) {
+    .fy-member--detailed {
+      flex-direction: column;
+    }
+    .fy-member--detailed .fy-member__photo {
+      aspect-ratio: 4 / 5;
+    }
+  }
+</style>

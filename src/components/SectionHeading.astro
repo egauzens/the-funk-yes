@@ -1,0 +1,49 @@
+---
+interface Props {
+  kicker?: string;
+  title: string;
+  id?: string;
+  class?: string;
+  /** Optional right-aligned link. */
+  link?: { label: string; href: string };
+}
+const { kicker, title, id, class: className, link } = Astro.props;
+---
+
+<header class:list={["fy-sec-head", className]}>
+  <div>
+    {kicker && <p class="fy-kicker">{kicker}</p>}
+    <h2 id={id}>{title}</h2>
+  </div>
+  {
+    link && (
+      <a href={link.href} class="fy-sec-head__link fy-link-underline">
+        {link.label} <span aria-hidden="true">→</span>
+      </a>
+    )
+  }
+</header>
+
+<style>
+  .fy-sec-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+  }
+  .fy-sec-head h2 {
+    font-size: clamp(2rem, 6vw, 3.75rem);
+    margin-top: 0.35rem;
+  }
+  .fy-sec-head__link {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fy-acid);
+    white-space: nowrap;
+  }
+</style>

@@ -1,0 +1,197 @@
+---
+import { INTEGRATIONS, SITE } from "../config.ts";
+
+interface Props {
+  /** "compact" for the home teaser, "full" for the /contact page. */
+  variant?: "compact" | "full";
+  class?: string;
+}
+const { variant = "full", class: className } = Astro.props;
+const id = INTEGRATIONS.formspreeId;
+const action = id ? `https://formspree.io/f/${id}` : "";
+const full = variant === "full";
+---
+
+<form
+  class:list={["fy-contact", `fy-contact--${variant}`, className]}
+  action={action || undefined}
+  method="post"
+  data-configured={action ? "true" : "false"}
+>
+  <div class="fy-field">
+    <label for="fy-c-name">Your name</label>
+    <input id="fy-c-name" type="text" name="name" autocomplete="name" required />
+  </div>
+
+  <div class="fy-field">
+    <label for="fy-c-email">Email</label>
+    <input id="fy-c-email" type="email" name="email" autocomplete="email" required />
+  </div>
+
+  {
+    full && (
+      <>
+        <div class="fy-field">
+          <label for="fy-c-where">Where's the funk going? (backyard, bar, benefit…)</label>
+          <input id="fy-c-where" type="text" name="location" required />
+        </div>
+        <div class="fy-field">
+          <label for="fy-c-date">Date (or rough timing)</label>
+          <input id="fy-c-date" type="text" name="date" placeholder="e.g. Sat Aug 17, or 'sometime in fall'" />
+        </div>
+        <div class="fy-field">
+          <label for="fy-c-budget">Budget — sliding scale, free to whatever you've got</label>
+          <input id="fy-c-budget" type="text" name="budget" placeholder="Pay what it's worth to you" />
+        </div>
+      </>
+    )
+  }
+
+  <div class="fy-field">
+    <label for="fy-c-msg">{full ? "Tell us about it" : "What's the gig?"}</label>
+    <textarea id="fy-c-msg" name="message" rows={full ? 5 : 3} required></textarea>
+  </div>
+
+  <input type="hidden" name="_subject" value={`Booking inquiry — ${SITE.title}`} />
+  <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="fy-hp" aria-hidden="true" />
+
+  <div class="fy-contact__foot">
+    <button type="submit">Send it →</button>
+    <p class="fy-contact__status" role="status" aria-live="polite"></p>
+  </div>
+
+  {
+    !action && (
+      <p class="fy-contact__note">
+        Form endpoint not configured — set <code>PUBLIC_FORMSPREE_ID</code> (repo variable) to a
+        Formspree form id. Until then this submits nowhere.
+      </p>
+    )
+  }
+</form>
+
+<style>
+  .fy-contact {
+    display: grid;
+    gap: 1rem;
+  }
+  .fy-contact--full {
+    max-width: 40rem;
+  }
+  .fy-field {
+    display: grid;
+    gap: 0.4rem;
+  }
+  .fy-field label {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-fy-acid);
+  }
+  .fy-contact input,
+  .fy-contact textarea {
+    padding: 0.75rem 0.85rem;
+    background: var(--color-fy-bg);
+    border: 1px solid var(--color-fy-line);
+    color: var(--color-fy-ink);
+    font: inherit;
+    resize: vertical;
+  }
+  .fy-contact input:focus,
+  .fy-contact textarea:focus {
+    border-color: var(--color-fy-acid);
+    outline: none;
+  }
+  .fy-hp {
+    position: absolute !important;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+  }
+  .fy-contact__foot {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .fy-contact button {
+    padding: 0.8rem 1.6rem;
+    background: var(--color-fy-acid);
+    color: #0b0b0c;
+    border: 0;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+  .fy-contact button:hover,
+  .fy-contact button:focus-visible {
+    background: #fff;
+  }
+  .fy-contact button[disabled] {
+    opacity: 0.5;
+    cursor: progress;
+  }
+  .fy-contact__status {
+    margin: 0;
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+  }
+  .fy-contact__status[data-state="ok"] {
+    color: var(--color-fy-acid);
+  }
+  .fy-contact__status[data-state="err"] {
+    color: var(--color-fy-magenta);
+  }
+  .fy-contact__note {
+    margin: 0;
+    font-size: 0.8rem;
+    color: var(--color-fy-ink-dim);
+  }
+  .fy-contact__note code {
+    font-family: var(--font-mono);
+    color: var(--color-fy-acid);
+  }
+</style>
+
+<script>
+  document.querySelectorAll<HTMLFormElement>(".fy-contact").forEach((form) => {
+    if (form.dataset.configured !== "true") return;
+    const status = form.querySelector<HTMLElement>(".fy-contact__status")!;
+    const btn = form.querySelector<HTMLButtonElement>("button[type=submit]")!;
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      status.textContent = "Sending…";
+      status.removeAttribute("data-state");
+      btn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: "POST",
+          body: new FormData(form),
+          headers: { Accept: "application/json" },
+        });
+        if (res.ok) {
+          form.reset();
+          status.textContent = "Got it. We'll be in touch.";
+          status.dataset.state = "ok";
+        } else {
+          const data = await res.json().catch(() => null);
+          status.textContent =
+            data?.errors?.map((x: any) => x.message).join(", ") ??
+            "Something broke. Email us instead.";
+          status.dataset.state = "err";
+        }
+      } catch {
+        status.textContent = "Network error. Email us instead.";
+        status.dataset.state = "err";
+      } finally {
+        btn.disabled = false;
+      }
+    });
+  });
+</script>

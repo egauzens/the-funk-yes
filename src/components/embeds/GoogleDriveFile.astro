@@ -1,0 +1,48 @@
+---
+import EmbedFrame from "./EmbedFrame.astro";
+
+interface Props {
+  /** Drive file id, or any drive.google.com share URL. File must be shared "anyone with the link". */
+  idOrUrl: string;
+  title?: string;
+  label?: string;
+  /** "video" (16/9 frame) or "audio" (short frame). */
+  kind?: "video" | "audio";
+}
+const { idOrUrl, title = "Google Drive media", label, kind = "video" } = Astro.props;
+
+function extractId(input: string): string | null {
+  if (/^[\w-]{20,}$/.test(input)) return input;
+  const m = input.match(/[-\w]{20,}/);
+  return m ? m[0] : null;
+}
+const id = extractId(idOrUrl);
+const src = id ? `https://drive.google.com/file/d/${id}/preview` : "";
+const ratio = kind === "audio" ? undefined : "16 / 9";
+const height = kind === "audio" ? 70 : undefined;
+---
+
+<EmbedFrame label={label} ratio={ratio}>
+  {
+    id ? (
+      <iframe
+        src={src}
+        title={title}
+        loading="lazy"
+        allow="autoplay"
+        allowfullscreen
+        style={height ? `height:${height}px` : undefined}
+      />
+    ) : (
+      <p class="fy-embed-missing">Set a valid Google Drive file id or share URL for “{title}”.</p>
+    )
+  }
+</EmbedFrame>
+
+<style>
+  .fy-embed-missing {
+    padding: 1.5rem;
+    color: var(--color-fy-ink-dim);
+    font-size: 0.85rem;
+  }
+</style>

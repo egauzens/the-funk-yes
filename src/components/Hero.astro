@@ -1,0 +1,131 @@
+---
+import { withBase } from "../config.ts";
+import type { SiteContent } from "../lib/types.ts";
+import SocialIcons from "./SocialIcons.astro";
+
+interface Props {
+  content: SiteContent;
+}
+const { content } = Astro.props;
+const photo = content.bandGroupPhoto;
+---
+
+<section class="fy-hero" aria-label="The Funk Yes!">
+  {
+    photo && (
+      <div class="fy-hero__bg fy-duotone" aria-hidden="true">
+        <img src={photo.url} alt="" width={photo.width} height={photo.height} fetchpriority="high" />
+      </div>
+    )
+  }
+
+  <div class="fy-shell fy-hero__inner">
+    <p class="fy-kicker fy-hero__kicker">{content.heroTagline}</p>
+
+    <h1 class="fy-hero__title">
+      <span class="fy-hero__funk">The Funk Yes!</span>
+      <span class="fy-hero__slash" aria-hidden="true">//</span>
+      <a class="fy-hero__fuck" href={withBase("/fuck-yes")}>The Fuck Yes!</a>
+    </h1>
+
+    <p class="fy-hero__mission">{content.missionStatement}</p>
+
+    <SocialIcons class="fy-hero__socials" size={22} />
+  </div>
+
+  <a class="fy-hero__scroll" href="#explore" aria-label="Scroll to explore">↓</a>
+</section>
+
+<style>
+  .fy-hero {
+    position: relative;
+    min-height: min(92vh, 46rem);
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    border-bottom: 2px solid var(--color-fy-ink);
+  }
+  .fy-hero__bg {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+  .fy-hero__bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .fy-hero__bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      180deg,
+      rgba(11, 11, 12, 0.55) 0%,
+      rgba(11, 11, 12, 0.35) 40%,
+      rgba(11, 11, 12, 0.85) 100%
+    );
+  }
+  .fy-hero__inner {
+    position: relative;
+    z-index: 1;
+    padding-block: 4rem;
+    text-align: center;
+  }
+  .fy-hero__kicker {
+    margin: 0 0 1.25rem;
+  }
+  .fy-hero__title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: center;
+    gap: 0.4rem 0.75rem;
+    font-size: clamp(2.75rem, 11vw, 8rem);
+  }
+  .fy-hero__slash {
+    color: var(--color-fy-magenta);
+  }
+  .fy-hero__fuck {
+    color: var(--color-fy-ink-dim);
+    transition: color 0.2s var(--ease-funk);
+  }
+  .fy-hero__fuck:hover,
+  .fy-hero__fuck:focus-visible {
+    color: var(--color-fy-magenta);
+  }
+  .fy-hero__mission {
+    margin: 1.5rem auto 2rem;
+    max-width: 26ch;
+    font-size: clamp(1.1rem, 2.6vw, 1.6rem);
+    color: var(--color-fy-ink);
+  }
+  .fy-hero__socials {
+    justify-content: center;
+  }
+  .fy-hero__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: 1.25rem;
+    transform: translateX(-50%);
+    z-index: 1;
+    font-family: var(--font-mono);
+    font-size: 1.25rem;
+    color: var(--color-fy-ink-dim);
+    animation: fy-bob 2s var(--ease-funk) infinite;
+  }
+  @keyframes fy-bob {
+    0%,
+    100% {
+      transform: translate(-50%, 0);
+    }
+    50% {
+      transform: translate(-50%, 6px);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .fy-hero__scroll {
+      animation: none;
+    }
+  }
+</style>

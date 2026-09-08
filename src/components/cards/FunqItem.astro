@@ -1,0 +1,85 @@
+---
+import type { Funq } from "../../lib/types.ts";
+
+interface Props {
+  funq: Funq;
+  index: number;
+  open?: boolean;
+}
+const { funq, index, open = false } = Astro.props;
+---
+
+<details class="fy-funq" open={open}>
+  <summary>
+    <span class="fy-funq__num" aria-hidden="true">{String(index).padStart(2, "0")}</span>
+    <span class="fy-funq__q">{funq.question}</span>
+    <span class="fy-funq__mark" aria-hidden="true"></span>
+  </summary>
+  <div class="fy-funq__a fy-prose" set:html={funq.answer} />
+</details>
+
+<style>
+  .fy-funq {
+    border-top: 1px solid var(--color-fy-line);
+  }
+  .fy-funq:last-of-type {
+    border-bottom: 1px solid var(--color-fy-line);
+  }
+  .fy-funq summary {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr 1.5rem;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 1.15rem 0.25rem;
+    cursor: pointer;
+    list-style: none;
+  }
+  .fy-funq summary::-webkit-details-marker {
+    display: none;
+  }
+  .fy-funq__num {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-fy-acid);
+  }
+  .fy-funq__q {
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    font-size: clamp(1.1rem, 2.5vw, 1.5rem);
+    line-height: 1.05;
+  }
+  .fy-funq__mark {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    align-self: center;
+  }
+  .fy-funq__mark::before,
+  .fy-funq__mark::after {
+    content: "";
+    position: absolute;
+    background: var(--color-fy-ink);
+    transition: transform 0.2s var(--ease-funk);
+  }
+  .fy-funq__mark::before {
+    inset: 45% 0;
+    height: 2px;
+  }
+  .fy-funq__mark::after {
+    inset: 0 45%;
+    width: 2px;
+  }
+  .fy-funq[open] .fy-funq__mark::after {
+    transform: scaleY(0);
+  }
+  .fy-funq__a {
+    padding: 0 0.25rem 1.4rem 3.25rem;
+    color: var(--color-fy-ink-dim);
+    max-width: 62ch;
+  }
+  @media (max-width: 40rem) {
+    .fy-funq__a {
+      padding-left: 0.25rem;
+    }
+  }
+</style>
