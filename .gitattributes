@@ -1,0 +1,6 @@
+# Normalize line endings — checkout native, commit LF.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.woff binary
+*.woff2 binary
