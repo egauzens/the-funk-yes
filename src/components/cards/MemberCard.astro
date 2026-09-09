@@ -106,7 +106,9 @@ const { member: m, detailed = false } = Astro.props;
   }
   .fy-member--detailed .fy-member__photo {
     flex: 0 0 40%;
-    aspect-ratio: auto;
+    /* Keep the 4:5 ratio from the base rule and pin to the top, so every
+       portrait is the same shape regardless of how long the bio runs. */
+    align-self: flex-start;
   }
   @media (max-width: 46rem) {
     .fy-member--detailed {

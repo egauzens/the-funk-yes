@@ -106,8 +106,10 @@ export const bandMembers: BandMember[] = [
     longBio:
       "<p>Cass started the Tuesday jam that became The Funk Yes!. Plays rhythm like the downbeat is a personal challenge.</p>",
     photo: {
-      url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=70",
+      url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=1200&h=1500&q=70",
       alt: "Acoustic guitarist playing live",
+      width: 1200,
+      height: 1500,
     },
     order: 1,
     socials: { instagram: "https://instagram.com/cassmalone" },
@@ -119,8 +121,10 @@ export const bandMembers: BandMember[] = [
     shortBio: "One note, held long enough to pay rent.",
     longBio: "<p>Reggie is the reason the room moves. Fender P, flatwounds, no pick, no mercy.</p>",
     photo: {
-      url: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=800&q=70",
+      url: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=1200&h=1500&q=70",
       alt: "Bassist in low light",
+      width: 1200,
+      height: 1500,
     },
     order: 2,
   },
@@ -131,8 +135,10 @@ export const bandMembers: BandMember[] = [
     shortBio: "Rhythm parts like a metronome with opinions, solos like she's mad about it.",
     longBio: "<p>Nina runs her tele through more pedals than strictly necessary. Nobody complains.</p>",
     photo: {
-      url: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=800&q=70",
+      url: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=1200&h=1500&q=70",
       alt: "Electric guitarist on a dim stage",
+      width: 1200,
+      height: 1500,
     },
     order: 3,
   },
@@ -143,8 +149,10 @@ export const bandMembers: BandMember[] = [
     shortBio: "The metronome has a complaint and it is about Marcus.",
     longBio: "<p>Deep pocket, ghost notes for days, gets a full kit's worth of sound out of a wooden box.</p>",
     photo: {
-      url: "https://images.unsplash.com/photo-1508973379184-7517410fb0bc?auto=format&fit=crop&w=800&q=70",
+      url: "https://images.unsplash.com/photo-1508973379184-7517410fb0bc?auto=format&fit=crop&w=1200&h=1500&q=70",
       alt: "Hands playing a cajon",
+      width: 1200,
+      height: 1500,
     },
     order: 4,
   },
