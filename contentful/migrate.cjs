@@ -1,21 +1,26 @@
 /**
  * Contentful content-model migration for The Funk Yes!
  *
- * Creates every content type the site expects. Safe to re-run — it only creates
- * models/fields that don't exist yet is NOT guaranteed, so run it once on a
- * fresh space. To apply:
+ * Creates every content type the site expects. Run once on a fresh space
+ * (contentful-migration does not cleanly re-run against an existing model):
  *
  *   npx contentful-migration \
  *     --space-id   <SPACE_ID> \
- *     --management-token <CMA_TOKEN> \
+ *     --access-token <CMA_TOKEN> \
  *     --environment-id master \
- *     contentful/migrate.mjs
+ *     --yes \
+ *     contentful/migrate.cjs
  *
- * (CMA token = Contentful → Settings → API keys → Content management tokens →
- *  "Generate personal token". Different from the delivery token the site uses.)
+ * CMA token = Contentful → Settings → API keys → "Content management tokens"
+ * tab → "Generate personal token". Different from the read-only delivery token
+ * the site build uses. If the org restricts personal access tokens you may
+ * need to approve the token under Organization settings → Security first.
+ *
+ * CommonJS on purpose — the contentful-migration CLI loads this file with
+ * require(), so it must not be an ES module.
  */
 
-export default function (migration) {
+module.exports = function (migration) {
   /* ----------------------------- siteContent ---------------------------- */
   const site = migration
     .createContentType("siteContent")
@@ -94,22 +99,16 @@ export default function (migration) {
     .type("Symbol")
     .required(true)
     .validations([{ in: ["SoundCloud", "Bandcamp", "Google Drive"] }]);
-  rec
-    .createField("embedUrlOrId")
-    .name("Embed URL or id")
-    .type("Symbol")
-    .required(true)
-    .validations([
-      {
-        message:
-          "SoundCloud/Drive: paste the share URL. Bandcamp: the numeric album id (or 'track=123').",
-      },
-    ]);
+  rec.createField("embedUrlOrId").name("Embed URL or id").type("Symbol").required(true);
   rec.createField("recordedDate").name("Recorded date").type("Date");
   rec.createField("description").name("Description").type("Text");
   rec.createField("featured").name("Feature on home page").type("Boolean");
   rec.changeFieldControl("recordingType", "builtin", "dropdown");
   rec.changeFieldControl("platform", "builtin", "dropdown");
+  rec.changeFieldControl("embedUrlOrId", "builtin", "singleLine", {
+    helpText:
+      "SoundCloud/Drive: paste the share URL. Bandcamp: the numeric album id (or 'track=123').",
+  });
 
   /* ------------------------------ liveVideo -------------------------- */
   const video = migration
@@ -124,18 +123,14 @@ export default function (migration) {
     .type("Symbol")
     .required(true)
     .validations([{ in: ["YouTube", "Google Drive", "Instagram"] }]);
-  video
-    .createField("urlOrId")
-    .name("URL or id")
-    .type("Symbol")
-    .required(true)
-    .validations([
-      { message: "YouTube: video id or watch URL. Drive: file id/URL. Instagram: post/reel URL." },
-    ]);
+  video.createField("urlOrId").name("URL or id").type("Symbol").required(true);
   video.createField("date").name("Date").type("Date");
   video.createField("description").name("Description").type("Text");
   video.createField("featured").name("Feature on home page").type("Boolean");
   video.changeFieldControl("platform", "builtin", "dropdown");
+  video.changeFieldControl("urlOrId", "builtin", "singleLine", {
+    helpText: "YouTube: video id or watch URL. Drive: file id/URL. Instagram: post/reel URL.",
+  });
 
   /* -------------------------------- funq ----------------------------- */
   const funq = migration
@@ -162,4 +157,4 @@ export default function (migration) {
     .validations([{ in: ["Instagram", "Google Drive"] }]);
   gallery.createField("sourceRef").name("Source ref (handle / folder id)").type("Symbol");
   gallery.createField("items").name("Items (JSON list)").type("Object");
-}
+};

@@ -13,16 +13,18 @@ You can build the content models **automatically** (recommended) or **by hand**.
 1. Create a free space at <https://app.contentful.com> → note the **Space ID**
    (Settings → General settings).
 2. Settings → API keys → **Content management tokens** → *Generate personal token*.
-   Copy it (starts `CFPAT-…`).
+   Copy it (starts `CFPAT-…`). If migration fails with `OrganizationAccessGrantRequired`,
+   the org is gating personal tokens — open **Organization settings → (Security /
+   Access tools) → personal access tokens** and approve/authorize this token, then retry.
 3. From the repo root:
 
    ```bash
    npx contentful-migration \
      --space-id "<SPACE_ID>" \
-     --management-token "<CFPAT token>" \
+     --access-token "<CFPAT token>" \
      --environment-id master \
      --yes \
-     contentful/migrate.mjs
+     contentful/migrate.cjs
    ```
 
 4. This creates: `siteContent`, `show`, `bandMember`, `recording`, `liveVideo`,
@@ -119,6 +121,20 @@ Content model → Add content type. Field types in parens. Mark **required** whe
 ---
 
 ## After the models exist
+
+### Quick option — seed placeholder content with a script
+
+Fills the space with the same stand-in content the site ships as fixtures (no
+images — add those in the web app) and publishes it all:
+
+```bash
+CONTENTFUL_SPACE_ID=<SPACE_ID> \
+CONTENTFUL_MANAGEMENT_TOKEN=<CFPAT token> \
+node contentful/seed.mjs
+```
+
+One-time only — re-running makes duplicates. Then skip to step 2 below for the
+delivery token. Or do it by hand:
 
 1. Create **one** `siteContent` entry and fill it in. Add a few `show`,
    `bandMember`, `recording`, `liveVideo`, and `funq` entries. **Publish** each one

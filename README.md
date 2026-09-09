@@ -67,7 +67,7 @@ goes through `withBase()`.
 
 Full instructions: **[`contentful/migration.md`](contentful/migration.md)**. Short version:
 
-1. Create a space, run `contentful/migrate.mjs` (or build the 7 models by hand).
+1. Create a space, run `contentful/migrate.cjs` (or build the 7 models by hand).
 2. Create one `siteContent` entry + some shows / members / recordings / videos /
    FUNQs. **Publish** them.
 3. Add repo **Secrets**: `CONTENTFUL_SPACE_ID`, `CONTENTFUL_DELIVERY_TOKEN`.
