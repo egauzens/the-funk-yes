@@ -26,17 +26,17 @@ export const siteContent: SiteContent = {
   missionStatement: "Elevate everything + everyone, everywhere.",
   heroTagline: "Live funk for backyards, bars, benefits, and the street corner.",
   bandBioShort:
-    "The Funk Yes! is a horn-forward funk collective built on one rule: say yes to the groove. We started as a Tuesday-night jam that refused to end and turned into a band that will play just about anywhere there's a plug and a pulse.",
+    "The Funk Yes! is a four-piece funk band built on one rule: say yes to the groove. Acoustic guitar, electric guitar, bass, and cajon — we started as a Tuesday-night jam that refused to end and turned into a band that will play just about anywhere there's a corner and a pulse.",
   bandBioLong:
-    "<p>The Funk Yes! started in a garage with a borrowed bass amp and a standing Tuesday invite. Nobody left. Months later the jam had a horn section, a name, and a booking calendar.</p><p>We play <strong>practice-room funk</strong>, <strong>sweaty live sets</strong>, and the occasional <strong>studio experiment</strong>. The through-line is the pocket and the people in the room.</p>",
+    "<p>The Funk Yes! started in a garage with a borrowed bass amp and a standing Tuesday invite. Nobody left. Months later the jam had a name, a booking calendar, and a lineup that stuck: acoustic guitar, electric guitar, bass, and cajon.</p><p>We play <strong>practice-room funk</strong>, <strong>sweaty live sets</strong>, and the occasional <strong>studio experiment</strong>. No kit, no horns — just four people, a wooden box, and the pocket.</p>",
   bandGroupPhoto: {
     url: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1600&q=70",
-    alt: "The Funk Yes! playing a packed room, horns up",
+    alt: "The Funk Yes! playing a packed room",
     width: 1600,
     height: 1067,
   },
   fuckYesDescription:
-    "<p><strong>The Fuck Yes!</strong> is what happens after midnight. Same players, darker room, heavier low end, no setlist. Distortion on the Rhodes, breakbeats, and a horn section that sounds like it owes somebody money.</p>",
+    "<p><strong>The Fuck Yes!</strong> is what happens after midnight. Same four players, darker room, heavier low end, no setlist. Fuzz on the electric guitar, the cajon hit like it owes somebody money, and the acoustic turned up loud enough to fight back.</p>",
   fuckYesPhoto: {
     url: "https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1600&q=70",
     alt: "Dark, smoke-lit stage with a band silhouetted against red light",
@@ -44,7 +44,7 @@ export const siteContent: SiteContent = {
     height: 1067,
   },
   bookingBlurb:
-    "<p>We play backyards, streets, bars, restaurants, benefits, warehouses, weddings, wakes, and parking lots. Rates run on a <strong>sliding scale from free to whatever you've got</strong> — and no, we would not turn down a $1,000,000 check from Elon Musk.</p><p>Tell us the place, the date, and the vibe. We'll bring the funk.</p>",
+    "<p>We play backyards, streets, bars, restaurants, benefits, warehouses, weddings, wakes, and parking lots. The acoustic guitar and cajon mean we can go fully unplugged on a street corner or plug in and get loud in a warehouse — power or no power. Rates run on a <strong>sliding scale from free to whatever you've got</strong> — and no, we would not turn down a $1,000,000 check from Elon Musk.</p><p>Tell us the place, the date, and the vibe. We'll bring the funk.</p>",
   funkFilesIntro:
     "Everything we've captured — phone recordings from the practice room, board tapes from live sets, and the stuff we actually finished in a studio.",
 };
@@ -100,17 +100,17 @@ export const shows: Show[] = [
 export const bandMembers: BandMember[] = [
   {
     id: "bm-1",
-    name: "Dizzy Malone",
-    instrumentRole: "Trumpet / band leader",
+    name: "Cass Malone",
+    instrumentRole: "Acoustic guitar / vocals / band leader",
     shortBio: "Calls the tunes, counts them off too fast, apologizes later.",
     longBio:
-      "<p>Dizzy started the Tuesday jam that became The Funk Yes!. Plays trumpet like the downbeat is a personal challenge.</p>",
+      "<p>Cass started the Tuesday jam that became The Funk Yes!. Plays rhythm like the downbeat is a personal challenge.</p>",
     photo: {
-      url: "https://images.unsplash.com/photo-1519892300165-cb5542fb47c7?auto=format&fit=crop&w=800&q=70",
-      alt: "Trumpet player mid-solo",
+      url: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?auto=format&fit=crop&w=800&q=70",
+      alt: "Acoustic guitarist playing live",
     },
     order: 1,
-    socials: { instagram: "https://instagram.com/dizzymalone" },
+    socials: { instagram: "https://instagram.com/cassmalone" },
   },
   {
     id: "bm-2",
@@ -120,31 +120,31 @@ export const bandMembers: BandMember[] = [
     longBio: "<p>Reggie is the reason the room moves. Fender P, flatwounds, no pick, no mercy.</p>",
     photo: {
       url: "https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=800&q=70",
-      alt: "Bass guitarist in low light",
+      alt: "Bassist in low light",
     },
     order: 2,
   },
   {
     id: "bm-3",
     name: "Nina Park",
-    instrumentRole: "Keys / Rhodes",
-    shortBio: "Comps like a rhythm guitarist, solos like she's mad about it.",
-    longBio: "<p>Nina runs the Rhodes through more pedals than the guitarist. Nobody complains.</p>",
+    instrumentRole: "Electric guitar",
+    shortBio: "Rhythm parts like a metronome with opinions, solos like she's mad about it.",
+    longBio: "<p>Nina runs her tele through more pedals than strictly necessary. Nobody complains.</p>",
     photo: {
-      url: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=800&q=70",
-      alt: "Keyboardist at a stage piano",
+      url: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=800&q=70",
+      alt: "Electric guitarist on a dim stage",
     },
     order: 3,
   },
   {
     id: "bm-4",
     name: "Marcus Adeyemi",
-    instrumentRole: "Drums",
+    instrumentRole: "Cajon / percussion",
     shortBio: "The metronome has a complaint and it is about Marcus.",
-    longBio: "<p>Deep pocket, ghost notes for days, hi-hat foot like a sewing machine.</p>",
+    longBio: "<p>Deep pocket, ghost notes for days, gets a full kit's worth of sound out of a wooden box.</p>",
     photo: {
-      url: "https://images.unsplash.com/photo-1519892338281-8f53e5b7b1b9?auto=format&fit=crop&w=800&q=70",
-      alt: "Drummer behind a kit",
+      url: "https://images.unsplash.com/photo-1508973379184-7517410fb0bc?auto=format&fit=crop&w=800&q=70",
+      alt: "Hands playing a cajon",
     },
     order: 4,
   },
@@ -168,7 +168,7 @@ export const recordings: Recording[] = [
     platform: "SoundCloud",
     embedUrlOrId: "https://soundcloud.com/forss/soulhack",
     recordedDate: soon(-45),
-    description: "Board tape, one mic on the crowd. Horns are hot, we left it.",
+    description: "Board tape, one mic on the crowd. The cajon's clipping and we left it.",
     featured: true,
   },
   {
@@ -199,7 +199,7 @@ export const liveVideos: LiveVideo[] = [
     platform: "YouTube",
     urlOrId: "dQw4w9WgXcQ",
     date: soon(-45),
-    description: "Golden hour, full horn section, crowd on the ledge.",
+    description: "Golden hour, all four of us, crowd on the ledge.",
     featured: true,
   },
   {
@@ -240,7 +240,7 @@ export const funqs: Funq[] = [
     id: "funq-3",
     question: "How many of you are there?",
     answer:
-      "<p>Between four and nine depending on the room and who's around. The core four always show up.</p>",
+      "<p>Four. Acoustic guitar, electric guitar, bass, and cajon. Sometimes a friend sits in, but the four of us are the whole band.</p>",
     order: 3,
   },
   {

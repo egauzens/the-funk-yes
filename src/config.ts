@@ -86,7 +86,7 @@ export const LINK_BOXES: {
     title: "Live Jam-Funk",
     href: "/live-jam-funk",
     blurb:
-      "Full-length video from the room — the horns, the pocket, the crowd. Every jam we caught on tape, in one place.",
+      "Full-length video from the room — the strings, the box, the pocket, the crowd. Every jam we caught on tape, in one place.",
   },
   {
     kicker: "Show up",
